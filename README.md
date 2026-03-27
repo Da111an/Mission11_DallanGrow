@@ -93,11 +93,6 @@ cd frontend
 npm run build
 ```
 
-## GitHub Submission Notes
-
-1. Push this repository to GitHub.
-2. Confirm both `backend` and `frontend` folders are included.
-3. Submit the GitHub repository link in Learning Suite.
 
 ## (Bootstrap attributes used)
 
