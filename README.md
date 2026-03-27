@@ -98,3 +98,8 @@ npm run build
 1. Push this repository to GitHub.
 2. Confirm both `backend` and `frontend` folders are included.
 3. Submit the GitHub repository link in Learning Suite.
+
+## (Bootstrap attributes used)
+
+
+`Used Bootstrap data attributes not shown in class videos: (1) In frontend/src/components/BookList.tsx, the "Toggle" button uses data-bs-toggle="collapse" and data-bs-target="#categoryFilterPanel" to expand/collapse the category checkbox filter section. (2) In frontend/src/components/CartSummary.tsx, the "Quick Cart Preview" button uses data-bs-toggle="offcanvas" and data-bs-target="#cartPreviewOffcanvas" to open a right-side cart preview panel, and buttons with data-bs-dismiss="offcanvas" close that panel.`

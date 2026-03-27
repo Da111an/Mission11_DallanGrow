@@ -146,3 +146,4 @@ C:\ProjectsIS\Mission11_DallanGrow\backend\obj\Debug\net10.0\refint\backend.dll
 C:\ProjectsIS\Mission11_DallanGrow\backend\obj\Debug\net10.0\backend.pdb
 C:\ProjectsIS\Mission11_DallanGrow\backend\obj\Debug\net10.0\backend.genruntimeconfig.cache
 C:\ProjectsIS\Mission11_DallanGrow\backend\obj\Debug\net10.0\ref\backend.dll
+C:\ProjectsIS\Mission11_DallanGrow\backend\obj\Debug\net10.0\backend.sourcelink.json

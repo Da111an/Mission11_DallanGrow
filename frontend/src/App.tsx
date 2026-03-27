@@ -1,17 +1,35 @@
 import './App.css'
-import BookList from './components/BookList'
+import { NavLink, Route, Routes } from 'react-router-dom'
+import { useCart } from './context/useCart'
+import CartPage from './pages/CartPage'
+import ShopPage from './pages/ShopPage'
 
 function App() {
+  const { totalItems } = useCart()
+
   return (
-    <main className="container py-4">
-      <div className="mb-4">
-        <h1 className="display-6 mb-1">Online Bookstore</h1>
-        <p className="text-muted mb-0">
-          Browse Prof. Hilton&apos;s recommended books with paging and title sorting.
-        </p>
-      </div>
-      <BookList />
-    </main>
+    <>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark" data-bs-theme="dark">
+        <div className="container">
+          <NavLink className="navbar-brand" to="/">
+            Hilton Bookstore
+          </NavLink>
+          <div className="d-flex align-items-center gap-2">
+            <NavLink className="btn btn-outline-light btn-sm" to="/">
+              Shop
+            </NavLink>
+            <NavLink className="btn btn-warning btn-sm" to="/cart">
+              Cart <span className="badge text-bg-dark">{totalItems}</span>
+            </NavLink>
+          </div>
+        </div>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<ShopPage />} />
+        <Route path="/cart" element={<CartPage />} />
+      </Routes>
+    </>
   )
 }
 
