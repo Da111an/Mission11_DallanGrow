@@ -89,4 +89,49 @@ app.MapGet("/api/books/categories", async (BookstoreContext db) =>
 })
 .WithName("GetBookCategories");
 
+app.MapGet("/api/books/{id:int}", async (BookstoreContext db, int id) =>
+{
+    var book = await db.Books.FindAsync(id);
+    return book is not null ? Results.Ok(book) : Results.NotFound();
+})
+.WithName("GetBookById");
+
+app.MapPost("/api/books", async (BookstoreContext db, backend.Models.Book book) =>
+{
+    db.Books.Add(book);
+    await db.SaveChangesAsync();
+    return Results.Created($"/api/books/{book.BookId}", book);
+})
+.WithName("CreateBook");
+
+app.MapPut("/api/books/{id:int}", async (BookstoreContext db, int id, backend.Models.Book updated) =>
+{
+    var book = await db.Books.FindAsync(id);
+    if (book is null) return Results.NotFound();
+
+    book.Title = updated.Title;
+    book.Author = updated.Author;
+    book.Publisher = updated.Publisher;
+    book.Isbn = updated.Isbn;
+    book.Classification = updated.Classification;
+    book.Category = updated.Category;
+    book.PageCount = updated.PageCount;
+    book.Price = updated.Price;
+
+    await db.SaveChangesAsync();
+    return Results.Ok(book);
+})
+.WithName("UpdateBook");
+
+app.MapDelete("/api/books/{id:int}", async (BookstoreContext db, int id) =>
+{
+    var book = await db.Books.FindAsync(id);
+    if (book is null) return Results.NotFound();
+
+    db.Books.Remove(book);
+    await db.SaveChangesAsync();
+    return Results.NoContent();
+})
+.WithName("DeleteBook");
+
 app.Run();

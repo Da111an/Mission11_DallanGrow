@@ -3,6 +3,7 @@ import { NavLink, Route, Routes } from 'react-router-dom'
 import { useCart } from './context/useCart'
 import CartPage from './pages/CartPage'
 import ShopPage from './pages/ShopPage'
+import AdminBooksPage from './pages/AdminBooksPage'
 
 function App() {
   const { totalItems } = useCart()
@@ -18,6 +19,9 @@ function App() {
             <NavLink className="btn btn-outline-light btn-sm" to="/">
               Shop
             </NavLink>
+            <NavLink className="btn btn-outline-info btn-sm" to="/adminbooks">
+              Admin
+            </NavLink>
             <NavLink className="btn btn-warning btn-sm" to="/cart">
               Cart <span className="badge text-bg-dark">{totalItems}</span>
             </NavLink>
@@ -28,6 +32,7 @@ function App() {
       <Routes>
         <Route path="/" element={<ShopPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/adminbooks" element={<AdminBooksPage />} />
       </Routes>
     </>
   )
