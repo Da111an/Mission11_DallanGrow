@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
+import { fetchBooks, fetchCategories } from '@/api/booksAPI'
 import CartSummary from './CartSummary'
 import { useCart } from '../context/useCart'
-import type { Book, BooksResponse, SortDirection } from '../types'
+import type { Book, SortDirection } from '../types'
 
-const API_BASE_URL = 'http://localhost:5000'
 const LAST_BROWSE_KEY = 'bookstore-last-browse'
 
 function BookList() {
@@ -22,9 +22,6 @@ function BookList() {
   const pageSize = Number(searchParams.get('pageSize') ?? '5') || 5
   const sort = (searchParams.get('sort') as SortDirection) || 'asc'
   const selectedCategories = searchParams.getAll('category')
-  const categoryQuery = selectedCategories
-    .map((item) => `&category=${encodeURIComponent(item)}`)
-    .join('')
 
   const updateQuery = useCallback((next: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams)
@@ -61,13 +58,7 @@ function BookList() {
 
     const loadCategories = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/books/categories`, {
-          signal: abortController.signal,
-        })
-        if (!response.ok) {
-          throw new Error(`Request failed: ${response.status}`)
-        }
-        const data: string[] = await response.json()
+        const data = await fetchCategories(abortController.signal)
         setCategories(data)
       } catch {
         if (!abortController.signal.aborted) {
@@ -88,16 +79,10 @@ function BookList() {
       setError('')
 
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/books?page=${page}&pageSize=${pageSize}&sort=${sort}${categoryQuery}`,
-          { signal: abortController.signal },
+        const data = await fetchBooks(
+          { page, pageSize, sort, categories: selectedCategories },
+          abortController.signal,
         )
-
-        if (!response.ok) {
-          throw new Error(`Request failed: ${response.status}`)
-        }
-
-        const data: BooksResponse = await response.json()
         setBooks(data.books)
         setTotalItems(data.pagination.totalItems)
         setTotalPages(data.pagination.totalPages)
@@ -115,7 +100,7 @@ function BookList() {
 
     loadBooks()
     return () => abortController.abort()
-  }, [categoryQuery, page, pageSize, sort])
+  }, [page, pageSize, sort, selectedCategories.join(',')])
 
   useEffect(() => {
     if (totalPages > 0 && page > totalPages) {

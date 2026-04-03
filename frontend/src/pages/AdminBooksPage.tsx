@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
+import {
+  fetchBooks,
+  createBook,
+  updateBook,
+  deleteBook,
+} from '@/api/booksAPI'
 import type { Book } from '../types'
-
-const API_BASE_URL = 'http://localhost:5000'
 
 const emptyBook: Omit<Book, 'bookId'> = {
   title: '',
@@ -26,9 +30,7 @@ function AdminBooksPage() {
     setIsLoading(true)
     setError('')
     try {
-      const res = await fetch(`${API_BASE_URL}/api/books?pageSize=100`)
-      if (!res.ok) throw new Error(`Failed: ${res.status}`)
-      const data = await res.json()
+      const data = await fetchBooks({ pageSize: 100 })
       setBooks(data.books)
     } catch {
       setError('Unable to load books.')
@@ -82,19 +84,9 @@ function AdminBooksPage() {
 
     try {
       if (editingBook) {
-        const res = await fetch(`${API_BASE_URL}/api/books/${editingBook.bookId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ bookId: editingBook.bookId, ...formData }),
-        })
-        if (!res.ok) throw new Error(`Update failed: ${res.status}`)
+        await updateBook(editingBook.bookId, formData)
       } else {
-        const res = await fetch(`${API_BASE_URL}/api/books`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ bookId: 0, ...formData }),
-        })
-        if (!res.ok) throw new Error(`Create failed: ${res.status}`)
+        await createBook(formData)
       }
       cancelForm()
       await loadBooks()
@@ -108,8 +100,7 @@ function AdminBooksPage() {
     setError('')
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/books/${bookId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error(`Delete failed: ${res.status}`)
+      await deleteBook(bookId)
       await loadBooks()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed.')
