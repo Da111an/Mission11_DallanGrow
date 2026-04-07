@@ -1,4 +1,7 @@
-# Mission 11 - Online Bookstore (IS 413)
+# Mission 13 - Online Bookstore (IS 413)
+
+DEPLOYMENT: https://ambitious-meadow-07776ad03.4.azurestaticapps.net/
+https://mission13-dallangrow.azurewebsites.net/api/books/categories
 
 This project implements Mission 11 using:
 - ASP.NET Core Web API (`backend`)
