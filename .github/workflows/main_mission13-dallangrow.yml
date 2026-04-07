@@ -1,64 +1,34 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+name: CI Build
 
-name: Build and deploy ASP.Net Core app to Azure Web App - Mission13-DallanGrow
-
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: windows-latest
-    permissions:
-      contents: read #This is required for actions/checkout
-
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          dotnet-version: '10.0.x'
+          node-version: '14'
 
-      - name: Build with dotnet
-        run: dotnet build ./backend/backend.csproj --configuration Release
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./backend
 
-      - name: dotnet publish
-        run: dotnet publish ./backend/backend.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+      - name: Build
+        run: npm run build
+        working-directory: ./backend
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
-
-  deploy:
-    runs-on: windows-latest
+  publish:
+    runs-on: ubuntu-latest
     needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FB6B9ED5CEF9464AA68168B3B1167B80 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_BC7D70E04BE94BD4B924860CE170EF77 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7EA7B6B7C0A54874BCE225DFCE4CFFA8 }}
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'Mission13-DallanGrow'
-          slot-name: 'Production'
-          package: .
+      - name: Publish
+        run: npm publish
+        working-directory: ./backend
